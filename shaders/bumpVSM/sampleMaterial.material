@@ -1,0 +1,25 @@
+import BumpVSM_template from "BumpVSM.material"
+import diffuse_template from "diffuse.material"
+material ball_bump : BumpVSM_template
+{
+	set_texture_alias ambient_tex ball_diffuse.png
+	set_texture_alias diffuse_tex ball_diffuse.png
+	set_texture_alias specular_tex ball_specular.png
+	set_texture_alias normal_tex ball_normal.png	
+}
+
+material ball : diffuse_template
+ {
+	set_texture_alias ambient_tex ball_diffuse.png
+	set_texture_alias diffuse_tex ball_diffuse.png
+	/*technique
+	{
+		pass
+		{
+			texture_unit Diffuse
+			{
+				texture ball_diffuse.png
+			}
+		}
+	}*/
+ }

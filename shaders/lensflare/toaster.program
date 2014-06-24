@@ -1,0 +1,11 @@
+fragment_program toaster hlsl
+{
+    source toaster.hlsl
+    entry_point main
+    target ps_2_b
+    
+    default_params
+    {
+		
+    }
+}

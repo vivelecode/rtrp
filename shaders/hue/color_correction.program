@@ -1,0 +1,11 @@
+fragment_program color_correction hlsl
+{
+    source color_correction.hlsl
+    entry_point main
+    target ps_2_b
+    
+    default_params
+    {
+		
+    }
+}

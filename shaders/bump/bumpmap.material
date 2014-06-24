@@ -1,0 +1,97 @@
+material wheel_bump_improved
+{
+	//lod_distances 0 10
+	lod_distances 500 1000
+	technique Map#36
+	{
+	  lod_index 1
+		pass Map#37
+		{
+			ambient 0.356863 0.356863 0.356863 1
+			diffuse 0.603922 0.603922 0.603922 1
+			specular 0.898039 0.898039 0.898039 1 80
+
+			vertex_program_ref ambient_vs
+			{
+			}
+
+			fragment_program_ref ambient_ps
+			{
+			}
+
+			texture_unit Map#38
+			{
+				texture_alias Map#38
+				texture wheel_diff.tga
+				filtering linear linear linear
+			}
+
+			texture_unit Map#304
+			{
+				texture_alias Map#304
+				texture wheel_spec.tga
+				filtering linear linear linear
+			}
+		}
+
+		pass Map#305
+		{
+			iteration once_per_light
+			ambient 0.356863 0.356863 0.356863 1
+			diffuse 0.603922 0.603922 0.603922 1
+			specular 0.898039 0.898039 0.898039 1 80
+			scene_blend add
+			illumination_stage per_light
+
+			vertex_program_ref diffuse_vs
+			{
+			}
+
+			fragment_program_ref diffuse_ps
+			{
+			}
+
+			texture_unit Map#38
+			{
+				texture_alias Map#38
+				texture wheel_diff.tga
+				filtering linear linear linear
+			}
+
+			texture_unit Map#304
+			{
+				texture_alias Map#304
+				texture wheel_spec.tga
+				filtering linear linear linear
+			}
+
+			texture_unit Map#306
+			{
+				texture_alias Map#306
+				texture wheel_normal.tga
+				filtering linear linear linear
+			}
+		}
+
+	}
+
+	technique Texture#332
+	{
+	  lod_index 2
+		pass Map#37
+		{
+			ambient 0.356863 0.356863 0.356863 1
+			diffuse 0.603922 0.603922 0.603922 1
+			specular 0.898039 0.898039 0.898039 1 80
+
+			texture_unit Map#38
+			{
+				texture_alias Map#38
+				texture wheel_diff.tga
+				filtering linear linear linear
+			}
+		}
+
+	}
+
+}

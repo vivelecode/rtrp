@@ -1,0 +1,16 @@
+material shadow_caster
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref shadow_caster_vs
+            {
+            }
+
+            fragment_program_ref shadow_caster_ps
+            {
+            }
+        }
+    }
+}

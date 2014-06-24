@@ -1,0 +1,64 @@
+compositor VolumetricSunLights
+{
+	technique
+	{
+		texture		rt_scene					target_width	target_height	PF_A8R8G8B8
+		texture		rt_scene_without_texture target_width_scaled 0.5 target_height_scaled 0.5	PF_A8R8G8B8		
+		texture		rt_volumetric_light_texture	target_width_scaled 0.5 target_height_scaled 0.5 PF_A8R8G8B8
+		
+		target	rt_scene
+		{
+			input previous
+		}
+
+		target rt_scene_without_texture
+		{
+			input none
+			
+			material_scheme VolumetricSunLightSceneWithOutTextures
+			
+			pass clear
+			{
+				buffers			colour	depth
+				colour_value	0 0 0 0
+				depth_value		1.0
+			}
+			
+			pass render_scene
+			{
+				first_render_queue	5
+				last_render_queue	95
+			}
+		}
+		
+
+		target rt_volumetric_light_texture		
+		{
+			input none
+			pass clear
+			{
+			}
+			
+			pass render_quad
+			{
+				identifier	1
+				material		Ogre/Compositor/VolumetricSunLight/LightScatering
+				input		0	rt_scene_without_texture
+			}
+		}
+
+		target_output
+		{
+			
+			input none
+						
+			pass render_quad
+			{
+				
+				material	Ogre/Compositor/VolumetricSunLight/FinalBlending
+				input		0		rt_scene
+				input		1		rt_volumetric_light_texture
+			}
+		}		
+	}
+}

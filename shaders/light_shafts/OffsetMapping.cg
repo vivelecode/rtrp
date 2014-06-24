@@ -1,0 +1,74 @@
+void main_vp(float4 position   : POSITION,
+              float3 normal      : NORMAL,
+              float2 uv         : TEXCOORD0,
+              float3 tangent     : TANGENT0,
+              
+              out float4 oPosition    : POSITION,
+              out float2 oUv          : TEXCOORD0,
+              out float3 oLightDir    : TEXCOORD1, 
+             out float3 oEyeDir       : TEXCOORD2, 
+             out float3 oHalfAngle    : TEXCOORD3, 
+              
+              uniform float4 lightPosition, 
+              uniform float3 eyePosition,   
+              uniform float4x4 worldViewProj)
+{   
+   oPosition = mul(worldViewProj, position);
+   
+   oUv = uv*float2(8, 8);   
+   
+   float3 lightDir = normalize(lightPosition.xyz -  (position * lightPosition.w));
+   float3 eyeDir = eyePosition - position.xyz;   
+   
+   float3 binormal = cross(tangent, normal);
+   
+   float3x3 rotation = float3x3(tangent, binormal, normal);
+   
+   lightDir = normalize(mul(rotation, lightDir));
+   eyeDir = normalize(mul(rotation, eyeDir));
+
+   oLightDir = lightDir;
+   oEyeDir = eyeDir;
+   oHalfAngle = normalize(eyeDir + lightDir);
+}
+
+float3 expand(float3 v)
+{
+	return (v - 0.5) * 2;
+}
+
+void main_fp(float2 uv : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	uniform float3 lightDiffuse,
+	uniform float3 lightSpecular,
+	uniform float4 scaleBias,
+	uniform sampler2D normalHeightMap,
+	uniform sampler2D diffuseMap,
+	out float4 oColor : COLOR)
+{	
+	float height = tex2D(normalHeightMap, uv).a;
+	
+	float scale = scaleBias.x;
+	float bias = scaleBias.y;
+	
+	float displacement = (height * scale) + bias;
+
+	float3 uv2 = float3(uv, 1);
+	
+	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+	
+	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
+	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+
+	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
+	float diff = saturate(dot(normal, lightDir));
+	if(diff<0.3)
+	   diff = 0.3;
+	float3 col = diffuse * diff * lightDiffuse + specular;
+
+	oColor = float4(col, 1);
+}
+
+
